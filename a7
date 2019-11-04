@@ -1,0 +1,136 @@
+SQL> create table Customer1(
+  2  Cust_id int,
+  3  name varchar2(20),
+  4  total_purchase int,
+  5  primary key(Cust_id)
+  6  );
+
+Table created.
+
+SQL> create table Category(
+  2  Cust_id int,
+  3  Name varchar2(20),
+  4  Class varchar2(20),
+  5  foreign key(Cust_id) references Customer1(Cust_id)       
+  6  );
+
+Table created.
+
+SQL> insert into Customer1(Cust_id,name,total_purchase) values(1,'Swarali',15000);
+
+1 row created.
+
+SQL> insert into Customer1(Cust_id,name,total_purchase) values(2,'Divya',4000);
+
+1 row created.
+
+SQL> select *from Customer1;
+
+   CUST_ID NAME 		TOTAL_PURCHASE
+---------- -------------------- --------------
+	 1 Swarali			 15000
+	 2 Divya			  4000
+
+SQL> 
+create or replace procedure proc_Grade
+ as        
+					    cid Customer1.Cust_id%type;
+					    cname Customer1.name%type;
+					    cpurchase Customer1.total_purchase%type;
+					    id_count int;
+					    cursor c is select Cust_id,name, total_purchase from Customer1;
+					    begin
+                                       loop
+					    open c;
+					    fetch c_customers into cid,cname,cpurchase;
+					    if c%found then
+					   dbms_output.put_line(chr(10)||cid||' '||cname||' '||cpurchase);
+select count(*) into c_exists from Category where Cust_id=cid;
+if id_count=0 then
+if(cpurchase<=20000 and cpurchase>=10000) then
+insert into Category(Cust_id,Name,Class) values(cid,cname,'Platinum');
+elsif(cpurchase<=9999 and cpurchase>=5000) then
+insert into Category(Cust_id,Name,Class) values(cid,cname,'Gold');
+elsif(cpurchase<=4999 and cpurchase>=2000) then
+insert into Category(Cust_id,Name,Class) values(cid,cname,'Silver');
+end if;
+end if;
+						end loop;
+close c_customers;
+end proc_Grade;
+
+
+SQL> set serveroutput on
+SQL> create or replace procedure proc_Grade
+					    as        
+					    cid Customer1.Cust_id%type;
+					    cname Customer1.name%type;
+					    cpurchase Customer1.total_purchase%type;
+					    c_exists int;
+					    cursor c_customers is select Cust_id,name, total_purchase from Customer1;
+					    begin
+					    open c_customers;
+					    loop
+					   fetch
+					   c_customers into cid,cname,cpurchase;
+					   exit when c_customers%notfound;
+					   dbms_output.put_line(chr(10)||cid||' '|  2  |cname||' '||cpurchase);
+select count(*) into c_exists from Category where Cust_id=cid;
+if c_exists=0 then
+if(cpurchase<=20000 and cpurchase>=10000) then
+insert into Category(Cust_id,Name,Class) values(cid,cname,'Platinum');
+elsif(cpurchase<=9999 a  3  nd cpurchase>=5000) then
+insert into Category(Cust_id,Name,Class) values(cid,cname,'Gold');
+elsif(cpurchase<=4999 and cpurchase>=2000) then
+insert into Category(Cust_id,Name,Class) values(cid,cname,'Silver');
+end if;
+end if;
+						end loop;
+close c_customers;
+end proc_Grade;
+  4    5    6    7    8    9   10   11   12   13   14   15   16   17   18   19   20   21   22   23   24   25   26   27   28  
+ 29  /
+
+Procedure created.
+
+SQL> execute proc_Grade
+
+1 Swarali 15000
+
+2 Divya 4000
+
+PL/SQL procedure successfully completed.
+
+SQL> select *from Category;
+
+   CUST_ID NAME 		CLASS
+---------- -------------------- --------------------
+	 1 Swarali		Platinum
+	 2 Divya		Silver
+
+SQL> insert into Customer1(Cust_id,name,total_purchase) values(3,'Priyanka',2000);
+
+1 row created.
+
+SQL> execute proc_Grade 
+
+1 Swarali 15000
+
+2 Divya 4000
+
+3 Priyanka 2000
+
+PL/SQL procedure successfully completed.
+
+SQL> select *from Category;
+
+   CUST_ID NAME 		CLASS
+---------- -------------------- --------------------
+	 1 Swarali		Platinum
+	 2 Divya		Silver
+	 3 Priyanka		Silver
+
+SQL> 
+
+   
+

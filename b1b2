@@ -1,0 +1,154 @@
+> use swarali;
+switched to db swarali
+> db.createCollection("student");
+{
+	"ok" : 0,
+	"errmsg" : "a collection 'swarali.student' already exists",
+	"code" : 48,
+	"codeName" : "NamespaceExists"
+}
+> db.createCollection("student1");
+{ "ok" : 1 }
+> db.student1.insert({id:1,name:'swarali',dept:'comp',marks:80});
+WriteResult({ "nInserted" : 1 })
+> db.student1.insert({id:2,name:'Harshada',dept:'comp',marks:90});
+WriteResult({ "nInserted" : 1 })
+> db.student1.insert({id:3,name:'Manasi',dept:'it',marks:90});
+WriteResult({ "nInserted" : 1 })
+> db.student1.insert({id:3,name:'Seema',dept:'it',marks:89});
+WriteResult({ "nInserted" : 1 })
+> db.student1.find().pretty();
+{
+	"_id" : ObjectId("5bca106598d9df9d93e0cb86"),
+	"id" : 1,
+	"name" : "swarali",
+	"dept" : "comp",
+	"marks" : 80
+}
+{
+	"_id" : ObjectId("5bca108198d9df9d93e0cb87"),
+	"id" : 2,
+	"name" : "Harshada",
+	"dept" : "comp",
+	"marks" : 90
+}
+{
+	"_id" : ObjectId("5bca109998d9df9d93e0cb88"),
+	"id" : 3,
+	"name" : "Manasi",
+	"dept" : "it",
+	"marks" : 90
+}
+{
+	"_id" : ObjectId("5bca10af98d9df9d93e0cb89"),
+	"id" : 3,
+	"name" : "Seema",
+	"dept" : "it",
+	"marks" : 89
+}
+
+
+> db.student1.update({dept:'comp'},{$set:{marks:70}});
+WriteResult({ "nMatched" : 1, "nUpserted" : 0, "nModified" : 1 })
+> db.student1.update({dept:'comp'},{$set:{marks:70}},{multi:true});
+WriteResult({ "nMatched" : 2, "nUpserted" : 0, "nModified" : 1 })
+> db.student1.update({dept:'entc'},{$set:{marks:88}},{upsert:true});
+WriteResult({
+	"nMatched" : 0,
+	"nUpserted" : 1,
+	"nModified" : 0,
+	"_id" : ObjectId("5bca11d21aec6b154b93a1f5")
+})
+> db.student1.find({$or:[{dept:'comp'},{dept:'it'}]}).pretty();
+{
+	"_id" : ObjectId("5bca106598d9df9d93e0cb86"),
+	"id" : 1,
+	"name" : "swarali",
+	"dept" : "comp",
+	"marks" : 70
+}
+{
+	"_id" : ObjectId("5bca108198d9df9d93e0cb87"),
+	"id" : 2,
+	"name" : "Harshada",
+	"dept" : "comp",
+	"marks" : 70
+}
+{
+	"_id" : ObjectId("5bca109998d9df9d93e0cb88"),
+	"id" : 3,
+	"name" : "Manasi",
+	"dept" : "it",
+	"marks" : 90
+}
+{
+	"_id" : ObjectId("5bca10af98d9df9d93e0cb89"),
+	"id" : 3,
+	"name" : "Seema",
+	"dept" : "it",
+	"marks" : 89
+}
+> db.student1.find({$and:[{dept:'comp'},{marks:80}]}).pretty();
+> db.student1.find({$and:[{dept:'comp'},{marks:80}]}).pretty();
+> db.student1.find({$and:[{dept:'comp'},{marks:90}]}).pretty();
+> db.student1.find({$and:[{dept:'comp'},{marks:90}]});
+> db.student1.find({$or:[{dept:'comp'},{marks:90}]}).pretty();
+{
+	"_id" : ObjectId("5bca106598d9df9d93e0cb86"),
+	"id" : 1,
+	"name" : "swarali",
+	"dept" : "comp",
+	"marks" : 70
+}
+{
+	"_id" : ObjectId("5bca108198d9df9d93e0cb87"),
+	"id" : 2,
+	"name" : "Harshada",
+	"dept" : "comp",
+	"marks" : 70
+}
+{
+	"_id" : ObjectId("5bca109998d9df9d93e0cb88"),
+	"id" : 3,
+	"name" : "Manasi",
+	"dept" : "it",
+	"marks" : 90
+}
+> db.student1.find({$and:[{dept:'comp'},{marks:90}]}).pretty();
+> db.student1.find({$and:[{dept:'comp'},{marks:{$gte:90}}]}).pretty();
+> db.student1.find({$and:[{dept:'comp'},{marks:{$ne:90}}]}).pretty();
+{
+	"_id" : ObjectId("5bca106598d9df9d93e0cb86"),
+	"id" : 1,
+	"name" : "swarali",
+	"dept" : "comp",
+	"marks" : 70
+}
+{
+	"_id" : ObjectId("5bca108198d9df9d93e0cb87"),
+	"id" : 2,
+	"name" : "Harshada",
+	"dept" : "comp",
+	"marks" : 70
+}
+> db.student1.find({$and:[{dept:'comp'},{marks:{$not:{$gte:90}}}]}).pretty();
+{
+	"_id" : ObjectId("5bca106598d9df9d93e0cb86"),
+	"id" : 1,
+	"name" : "swarali",
+	"dept" : "comp",
+	"marks" : 70
+}
+{
+	"_id" : ObjectId("5bca108198d9df9d93e0cb87"),
+	"id" : 2,
+	"name" : "Harshada",
+	"dept" : "comp",
+	"marks" : 70
+}
+> db.student1.save({id:5,name:'Swara',dept:'entc',marks:99});
+WriteResult({ "nInserted" : 1 })
+> db.student1.save({_id:1,id:3,name:'Trisha',dept:'entc',marks:99});
+WriteResult({ "nMatched" : 0, "nUpserted" : 1, "nModified" : 0, "_id" : 1 })
+> 
+

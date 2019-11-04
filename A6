@@ -1,0 +1,113 @@
+
+create table N_EmpId(id int,name varchar2(20),primary key(id));
+
+create table O_EmpId(id int,name varchar2(20),primary key(id));
+
+insert into N_EmpId values(1,'Swarali');
+insert into N_EmpId values(2,'Deepali');
+insert into N_EmpId values(3,'Natasha');
+insert into N_EmpId values(4,'Priyanka');
+
+	ID NAME
+---------- --------------------
+	 1 Swarali
+	 2 Deepali
+	 3 Natasha
+	 4 Priyanka
+
+
+-----------FOR LOOP NON-PARAMETERIZED-------------
+
+
+create or replace procedure proc as
+temp_row N_EmpId%rowtype;
+id_count int;
+cursor c is select *from N_EmpId where temp_row.id=id;
+
+begin
+
+dbms_output.put_line(chr(10)||'Inserting following records into O_EmpId:');
+
+for temp_row in c loop
+	select count(*) into id_count from O_EmpId where temp_row.id=id;
+	dbms_output.put_line(chr(10)||temp_row.id||' '||temp_row.name);
+if id_count=0 then
+	insert into O_EmpId values(temp_row.id,temp_row.name);
+	end if;
+end loop;
+end;
+
+Procedure created.
+
+SQL> exec proc
+
+Inserting following records into O_EmpId:
+
+1 Swarali
+
+2 Deepali
+
+3 Natasha
+
+4 Priyanka
+
+------------PARAMETERIZED CURSOR-------------
+
+create or replace procedure proc1 as
+min_id int;
+max_id int;
+id_count int;
+i int;
+c_id N_EmpId.id%type;
+c_name N_EmpId.name%type;
+cursor c(cid int) is select *from N_EmpId where id=cid;
+
+begin
+
+select min(id) into min_id from N_EmpId;
+select max(id) into max_id from N_EmpId;
+dbms_output.put_line(chr(10)||'Inserting records from old:');
+
+for i in min_id .. max_id loop
+	open c(i);
+	fetch c into c_id,c_name;
+	if c%found then
+		select count(*) into id_count from O_EmpId where id=c_id;
+		if id_count=0 then
+			dbms_output.put_line(chr(10)||c_id||' '||c_name);
+			insert into O_EmpId values(c_id,c_name);
+		end if;
+	end if;
+end loop;
+
+end proc1;
+
+------------IMPLICIT CURSOR------------
+
+create or replace trigger new_to_old after insert on N_EmpId for each row
+
+declare 
+
+id_count int;
+
+begin
+
+select count(*) into id_count from N_EmpId where id=:new.id;
+
+if id_count=0 then
+	dbms_output.put_line(chr(10)||:new.id||' '||:new.name);
+	insert into O_EmpId values(:new.id,:new.name);
+	end if;
+end;
+
+
+
+
+
+
+	
+	
+
+
+
+

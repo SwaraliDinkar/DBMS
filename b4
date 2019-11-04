@@ -1,0 +1,34 @@
+MAP REDUCE
+
+Counting total number of students in each department whose marks >=50
+
+
+db.student1.mapReduce(
+function(){emit(this.dept,1)},               //Mapper function
+function(key,values){return Array.sum(values)},    //emiter Function
+{query:{marks:{$gte:50}},out:"dept_total"}).find()
+ );
+
+{ "_id" : "comp", "value" : 2 }
+{ "_id" : "entc", "value" : 3 }
+{ "_id" : "it", "value" : 2 }
+
+//sorting according to total number of students 
+
+db.student1.mapReduce( 
+function(){emit(this.dept,1)}, 
+function(key,values){return Array.sum(values)}, 
+{query:{marks:{$gte:50}},out:"dept_total"}).find().sort({value:1});
+
+{ "_id" : "comp", "value" : 2 }
+{ "_id" : "it", "value" : 2 }
+{ "_id" : "entc", "value" : 3 }
+
+
+db.student1.mapReduce(
+ function(){emit(this.dept,1)}, 
+function(key,values){return Array.sum(values)}, 
+{query:{marks:{$gte:50}},out:"dept_total"}).find().limit(1);
+
+{ "_id" : "comp", "value" : 2 }
+

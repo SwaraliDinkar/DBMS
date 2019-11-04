@@ -1,0 +1,108 @@
+  	AGGREGATE FUNCTIONS:MIN,MAX,SUM,AVG,FIRST,LAST
+
+> db.student1.aggregate([{$group:{_id:"$dept",marks:{$min:"$marks"}}}]);  
+{ "_id" : "entc", "marks" : 88 }
+{ "_id" : "it", "marks" : 89 }
+{ "_id" : "comp", "marks" : 70 }
+DISPLAYS MINIMUM MARKS GROUPWISE(DEPTWISE AS WE HAVE MENTIONED)
+
+> db.student1.aggregate([{$group:{_id:"$dept",marks:{$max:"$marks"}}}]);
+{ "_id" : "entc", "marks" : 99 }
+{ "_id" : "it", "marks" : 90 }
+{ "_id" : "comp", "marks" : 70 }
+
+> db.student1.aggregate([{$group:{_id:"$dept",marks:{$sum:"$marks"}}}]);
+{ "_id" : "entc", "marks" : 286 }
+{ "_id" : "it", "marks" : 179 }
+{ "_id" : "comp", "marks" : 140 }
+
+> db.student1.aggregate([{$group:{_id:"$dept",marks:{$avg:"$marks"}}}]);
+{ "_id" : "entc", "marks" : 95.33333333333333 }
+{ "_id" : "it", "marks" : 89.5 }
+{ "_id" : "comp", "marks" : 70 }
+
+> db.student1.aggregate([{$group:{_id:"$dept",marks:{$first:"$marks"}}}]);
+{ "_id" : "entc", "marks" : 88 }
+{ "_id" : "it", "marks" : 90 }
+{ "_id" : "comp", "marks" : 70 }
+
+> db.student1.aggregate([{$group:{_id:"$dept",marks:{$last:"$marks"}}}]);
+{ "_id" : "entc", "marks" : 99 }
+{ "_id" : "it", "marks" : 89 }
+{ "_id" : "comp", "marks" : 70 }
+> 
+
+---------------------------------------------------------------------------------------------------------------------------------------------
+
+INDEXING
+
+Theory
+In MongoDB, we use 'ensureIndex ()' method to create an index. The following is the basic syntax for 'ensureIndex ()' method in the MongoDB. In the above syntax, the KEY is the name of the document's field on which we want to create an index and the number 1 is to create such index in the ascending order.
+
+db.student1.ensureIndex({id:1});
+{
+	"createdCollectionAutomatically" : false,
+	"numIndexesBefore" : 1,
+	"numIndexesAfter" : 2,
+	"ok" : 1
+}
+
+The db.collection.getIndexes() method is used to return an array that holds a list of documents that identify and describe the existing indexes on a collection.
+
+db.student1.getIndexes();
+[
+	{
+		"v" : 2,
+		"key" : {
+			"_id" : 1
+		},
+		"name" : "_id_",
+		"ns" : "swarali.student1"
+	},
+	{
+		"v" : 2,
+		"key" : {
+			"id" : 1
+		},
+		"name" : "id_1",
+		"ns" : "swarali.student1"
+	}
+]
+
+db.student1.find().min({id:2});
+{ "_id" : ObjectId("5bca108198d9df9d93e0cb87"), "id" : 2, "name" : "Harshada", "dept" : "comp", "marks" : 70 }
+{ "_id" : ObjectId("5bca109998d9df9d93e0cb88"), "id" : 3, "name" : "Manasi", "dept" : "it", "marks" : 90 }
+{ "_id" : ObjectId("5bca10af98d9df9d93e0cb89"), "id" : 3, "name" : "Seema", "dept" : "it", "marks" : 89 }
+{ "_id" : 1, "id" : 3, "name" : "Trisha", "dept" : "entc", "marks" : 99 }
+{ "_id" : ObjectId("5bca148898d9df9d93e0cb8a"), "id" : 5, "name" : "Swara", "dept" : "entc", "marks" : 99 }
+
+
+//SORT INDEX IN ASCENDING
+
+ db.student1.find().sort({id:1}).pretty();
+> 
+//SORTING IN DESCENDING
+
+db.student1.find().sort({id:-1}).pretty();
+
+//ENSURE INDEX
+
+ db.student1.ensureIndex({id:-1});
+{
+	"createdCollectionAutomatically" : false,
+	"numIndexesBefore" : 2,
+	"numIndexesAfter" : 3,
+	"ok" : 1
+}
+
+
+//GET SIZE OF INDEX:
+
+db.student1.stats();
+
+db.student1.find().explain();
+
+//DROP INDEX:
+
+db.student1.dropIndex({id:1});
+{ "nIndexesWas" : 3, "ok" : 1 }

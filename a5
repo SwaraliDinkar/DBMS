@@ -1,0 +1,59 @@
+
+create table Customer2(Cust_id int,Name varchar2(10), DateofPayment date, NameofScheme varchar(10),Status varchar2(2),primary key(cust_id));
+
+create table Fine2(Cust_id int,Date1 date, Amt number,foreign key(cust_id) references Customer2(cust_id) on delete cascade);
+
+insert into Customer2 values(1,'A','1-Oct-2018','saving','N');
+
+insert into Customer2 values(2,'B','1-Sep-2018','saving','N');
+
+insert into Customer2 values(3,'c','3-Oct-2018','saving','N');
+
+select *from Customer2;
+
+   CUST_ID NAME       DATEOFPAYMENT	 NAMEOFSCHE ST
+---------- ---------- ------------------ ---------- --
+	 1 A	      01-OCT-18 	 saving     N
+	 2 B	      01-SEP-18 	 saving     N
+	 3 c	      03-OCT-18 	 saving     N
+
+
+----------PL/SQL BLOCK------------
+
+declare
+
+c_id Customer2.Cust_id%type:=&x;
+s_name Customer2.NameofScheme%type:='&y';
+famt Fine2.Amt%type:=0;
+
+no_of_days number;
+paymentdate date;
+invalid_cust exception;
+
+begin
+
+if c_id<0 then
+	raise invalid_cust;
+else
+	select DateofPayment into paymentdate from Customer2 where (c_id=Cust_id) and (s_name=NameofScheme);
+	select sysdate-to_date(paymentdate) days into no_of_days from dual;
+
+		if(no_of_days>=15 and no_of_days<=30) then
+			famt:=5*no_of_days;
+		elsif no_of_days>30 then
+			famt:=15*no_of_days;
+		end if;
+	update Customer2 set Status='P';
+		if famt>0 then
+			insert into Fine2 values(c_id,sysdate,famt);
+		end if;
+end if;
+
+exception
+	when invalid_cust then
+		dbms_output.put_line('Invalid cust id');
+
+end;
+
+
+

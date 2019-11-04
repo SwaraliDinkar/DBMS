@@ -1,0 +1,28 @@
+JOIN
+
+1.select *from Customer natural join order1;
+
+2.select b.title,a.author_name,a.country from book b inner join author a where b.author_no=a.author_no;
+
+3.select c.cust_no,c.cust_fname,o.order_no from Customer c left join order1 o on c.cust_no=o.cust_no where o.order_no is NULL;
++---------+------------+----------+
+| cust_no | cust_fname | order_no |
++---------+------------+----------+
+|      11 | Shruti     |     NULL |
++---------+------------+----------+
+1 row in set (0.00 sec)
+
+
+4.select b.ISBN,b.title,o.order_no from book b left join order1 o on b.ISBN=o.ISBN where o.order_no is NULL;
++------+-------+----------+
+| ISBN | title | order_no |
++------+-------+----------+
+|  445 | fnru  |     NULL |
++------+-------+----------+
+1 row in set (0.00 sec)
+
+5.select c.cust_fname,b.title,b.author_no,b.pub_year from order1 o inner join Customer c on o.cust_no=c.cust_no inner join book b on o.ISBN=b.ISBN where b.ISBN=445;
+
+6.select count(o.ISBN),c.cust_fname from Customer c inner join order1 o where c.cust_no=o.cust_no;
+
+

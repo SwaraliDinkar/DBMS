@@ -1,0 +1,412 @@
+insert into Student(Rollno,Name,DateofAdmission,branch,percent,Status) values(1,'Swarali','16-JUL-18','COMP',87,'A');
+insert into Student(Rollno,Name,DateofAdmission,branch,percent,Status) values(2,'Priyanka','16-AUG-18','ENTC',75,'A');
+insert into Student(Rollno,Name,DateofAdmission,branch,percent,Status) values(3,'Natasha','15-JUL-18','IT',67,'NA');
+insert into Student(Rollno,Name,DateofAdmission,branch,percent,Status) values(4,'Trisha','16-JUN-18','COMP',75.6,'NA');
+insert into Student(Rollno,Name,DateofAdmission,branch,percent,Status) values(5,'Priya','01-JUL-18','ENTC',89,'A');
+
+create or replace trigger trig_after_update after update or delete
+on Student 
+for each row
+begin
+insert into Alumni values(:old.Rollno,:old.Name,:old.DateofAdmission,:old.branch,:old.percent,:old.Status);
+end;
+
+update Student set percent=89 where Rollno=4;
+update Student set Status='NA' where Rollno=5;
+
+
+
+SQL> create table Student(
+  2  Rollno int,
+  3  Name varchar(20),
+  4  DateofAdmission date,
+  5  branch varchar(20),
+  6  percent float,
+  7  Status varchar2(10),
+  8  primary key(Rollno)
+  9  );
+
+Table created.
+
+SQL> create table Alumni(
+  2  Rollno int,
+  3  Name varchar(20),
+  4  DateofAdmission date,
+  5  branch varchar(20),
+  6  percent float,
+  7  Status varchar2(10),
+  8  primary key(Rollno)
+  9  );
+
+Table created.
+
+SQL> insert into Student(Rollno,Name,DateofAdmission,branch,percent,Status) values(1,'Swarali','16-JUL-18','COMP',87,'A');
+
+1 row created.
+
+SQL> insert into Student(Rollno,Name,DateofAdmission,branch,percent,Status) values(2,'Priyanka','16-AUG-18','ENTC',75,'A');
+
+1 row created.
+
+SQL> insert into Student(Rollno,Name,DateofAdmission,branch,percent,Status) values(3,'Natasha','15-JUL-18','IT',67,'NA');
+
+1 row created.
+
+SQL> insert into Student(Rollno,Name,DateofAdmission,branch,percent,Status) values(4,'Trisha','16-JUN-18','COMP',75.6,'NA');
+
+1 row created.
+
+SQL> insert into Student(Rollno,Name,DateofAdmission,branch,percent,Status) values(5,'Priya','01-JUL-18','ENTC',89,'A');
+
+1 row created.
+
+SQL> select *from Student;
+
+    ROLLNO NAME 		DATEOFADMISSION    BRANCH
+---------- -------------------- ------------------ --------------------
+   PERCENT STATUS
+---------- ----------
+	 1 Swarali		16-JUL-18	   COMP
+	87 A
+
+	 2 Priyanka		16-AUG-18	   ENTC
+	75 A
+
+	 3 Natasha		15-JUL-18	   IT
+	67 NA
+
+
+    ROLLNO NAME 		DATEOFADMISSION    BRANCH
+---------- -------------------- ------------------ --------------------
+   PERCENT STATUS
+---------- ----------
+	 4 Trisha		16-JUN-18	   COMP
+      75.6 NA
+
+	 5 Priya		01-JUL-18	   ENTC
+	89 A
+
+
+SQL> create or replace trigger trig_before_update before update or delete
+on Student 
+for each row
+begin
+insert into Alumni values(:old.Rollno,:old.Name,:old.DateofAdmission,:old.branch,:old.percent,:old.Status);
+end;  2    3    4    5    6  
+  7  /
+
+Trigger created.
+
+SQL> update Student set percent=90 where Rollno=5;
+
+1 row updated.
+
+SQL> delete from Student where Rollno=3;
+
+1 row deleted.
+
+SQL> select *from Student;
+
+    ROLLNO NAME 		DATEOFADMISSION    BRANCH
+---------- -------------------- ------------------ --------------------
+   PERCENT STATUS
+---------- ----------
+	 1 Swarali		16-JUL-18	   COMP
+	87 A
+
+	 2 Priyanka		16-AUG-18	   ENTC
+	75 A
+
+	 4 Trisha		16-JUN-18	   COMP
+      75.6 NA
+
+
+    ROLLNO NAME 		DATEOFADMISSION    BRANCH
+---------- -------------------- ------------------ --------------------
+   PERCENT STATUS
+---------- ----------
+	 5 Priya		01-JUL-18	   ENTC
+	90 A
+
+
+SQL> select *from Alumni;
+
+    ROLLNO NAME 		DATEOFADMISSION    BRANCH
+---------- -------------------- ------------------ --------------------
+   PERCENT STATUS
+---------- ----------
+	 5 Priya		01-JUL-18	   ENTC
+	89 A
+
+	 3 Natasha		15-JUL-18	   IT
+	67 NA
+
+
+SQL> create or replace trigger trig_before_update after update or delete
+on Student 
+for each row
+begin
+insert into Alumni values(:old.Rollno,:old.Name,:old.DateofAdmission,:old.branch,:old.percent,:old.Status);
+end;  2    3    4    5    6  
+  7  /
+
+Trigger created.
+
+SQL> update Student set percent=89 where Rollno=4;
+
+1 row updated.
+
+SQL> select *from Student;
+
+    ROLLNO NAME 		DATEOFADMISSION    BRANCH
+---------- -------------------- ------------------ --------------------
+   PERCENT STATUS
+---------- ----------
+	 1 Swarali		16-JUL-18	   COMP
+	87 A
+
+	 2 Priyanka		16-AUG-18	   ENTC
+	75 A
+
+	 4 Trisha		16-JUN-18	   COMP
+	89 NA
+
+
+    ROLLNO NAME 		DATEOFADMISSION    BRANCH
+---------- -------------------- ------------------ --------------------
+   PERCENT STATUS
+---------- ----------
+	 5 Priya		01-JUL-18	   ENTC
+	90 A
+
+
+SQL> select *from Alumni;
+
+    ROLLNO NAME 		DATEOFADMISSION    BRANCH
+---------- -------------------- ------------------ --------------------
+   PERCENT STATUS
+---------- ----------
+	 5 Priya		01-JUL-18	   ENTC
+	89 A
+
+	 3 Natasha		15-JUL-18	   IT
+	67 NA
+
+	 4 Trisha		16-JUN-18	   COMP
+      75.6 NA
+
+
+SQL> create or replace trigger trig_after_update after update or delete
+on Student 
+for each row
+begin
+insert into Alumni values(:old.Rollno,:old.Name,:old.DateofAdmission,:old.branch,:old.percent,:old.Status);
+end;  2    3    4    5    6  
+  7  /
+
+Trigger created.
+
+SQL> update Student set percent =97 where Rollno =1;
+update Student set percent =97 where Rollno =1
+       *
+ERROR at line 1:
+ORA-00001: unique constraint (USER1.SYS_C006997) violated
+ORA-06512: at "USER1.TRIG_BEFORE_UPDATE", line 2
+ORA-04088: error during execution of trigger 'USER1.TRIG_BEFORE_UPDATE'
+
+
+SQL> update Student set percent =97 where Rollno =1;
+update Student set percent =97 where Rollno =1
+       *
+ERROR at line 1:
+ORA-00001: unique constraint (USER1.SYS_C006997) violated
+ORA-06512: at "USER1.TRIG_BEFORE_UPDATE", line 2
+ORA-04088: error during execution of trigger 'USER1.TRIG_BEFORE_UPDATE'
+
+
+SQL> delete from Student where Rollno=1;
+delete from Student where Rollno=1
+            *
+ERROR at line 1:
+ORA-00001: unique constraint (USER1.SYS_C006997) violated
+ORA-06512: at "USER1.TRIG_BEFORE_UPDATE", line 2
+ORA-04088: error during execution of trigger 'USER1.TRIG_BEFORE_UPDATE'
+
+
+SQL> create or replace trigger trig_before_update after update or delete
+on Student 
+for each row
+begin
+insert into Alumni values(:old.Rollno,:old.Name,:old.DateofAdmission,:old.branch,:old.percent,:old.Status);
+end;  2    3    4    5    6  
+  7  /
+
+Trigger created.
+
+SQL> delete from Student where Rollno=1;
+delete from Student where Rollno=1
+            *
+ERROR at line 1:
+ORA-00001: unique constraint (USER1.SYS_C006997) violated
+ORA-06512: at "USER1.TRIG_BEFORE_UPDATE", line 2
+ORA-04088: error during execution of trigger 'USER1.TRIG_BEFORE_UPDATE'
+
+
+SQL> create or replace trigger trig_after_update after update or delete
+on Student 
+for each row
+begin
+insert into Alumni values(:old.Rollno,:old.Name,:old.DateofAdmission,:old.branch,:old.percent,:old.Status);
+end;  2    3    4    5    6  
+  7  /
+
+Trigger created.
+
+SQL> update Student set Status='NA' where Rollno=1;
+update Student set Status='NA' where Rollno=1
+       *
+ERROR at line 1:
+ORA-00001: unique constraint (USER1.SYS_C006997) violated
+ORA-06512: at "USER1.TRIG_BEFORE_UPDATE", line 2
+ORA-04088: error during execution of trigger 'USER1.TRIG_BEFORE_UPDATE'
+
+
+SQL> create or replace trigger trig_before_update after update or delete
+on Student 
+for each row
+begin
+insert into Alumni values(:old.Rollno,:old.Name,:old.DateofAdmission,:old.branch,:old.percent,:old.Status);
+end;  2    3    4    5    6  
+  7  /
+
+Trigger created.
+
+SQL> ^Ccreate or replace trigger trig_before_update after update or delete
+on Student 
+for each row
+begin
+insert into Alumni values(:old.Rollno,:old.Name,:old.DateofAdmission,:old.branch,:old.percent,:old.Status);
+end;
+SQL> SP2-0042: unknown command "on Student" - rest of line ignored.
+SQL> SP2-0734: unknown command beginning "for each r..." - rest of line ignored.
+SQL>   2    3  
+  4  /
+SP2-0552: Bind variable "OLD" not declared.
+SQL>  update Student set Status='NA' where Rollno=1;
+ update Student set Status='NA' where Rollno=1
+        *
+ERROR at line 1:
+ORA-00001: unique constraint (USER1.SYS_C006997) violated
+ORA-06512: at "USER1.TRIG_BEFORE_UPDATE", line 2
+ORA-04088: error during execution of trigger 'USER1.TRIG_BEFORE_UPDATE'
+
+
+SQL> create or replace trigger trig_after_update after update or delete
+on Student 
+for each row
+begin
+insert into Alumni values(:old.Rollno,:old.Name,:old.DateofAdmission,:old.branch,:old.percent,:old.Status);
+end;
+  2    3    4    5    6    7  
+  8  /
+
+Trigger created.
+
+SQL> update Student set Status='NA' where Rollno=1;
+update Student set Status='NA' where Rollno=1
+       *
+ERROR at line 1:
+ORA-00001: unique constraint (USER1.SYS_C006997) violated
+ORA-06512: at "USER1.TRIG_BEFORE_UPDATE", line 2
+ORA-04088: error during execution of trigger 'USER1.TRIG_BEFORE_UPDATE'
+
+
+SQL> update Student set Status='NA' where Rollno=5;
+update Student set Status='NA' where Rollno=5
+       *
+ERROR at line 1:
+ORA-00001: unique constraint (USER1.SYS_C006997) violated
+ORA-06512: at "USER1.TRIG_AFTER_UPDATE", line 2
+ORA-04088: error during execution of trigger 'USER1.TRIG_AFTER_UPDATE'
+
+
+SQL> create or replace trigger trig_after_update after update or delete
+on Student 
+for each row
+begin
+insert into Alumni values(:old.Rollno,:old.Name,:old.DateofAdmission,:old.branch,:old.percent,:old.Status);
+end;
+  2    3    4    5    6    7  
+  8  /
+
+Trigger created.
+
+SQL> update Student set Status='NA' where Rollno=5;
+update Student set Status='NA' where Rollno=5
+       *
+ERROR at line 1:
+ORA-00001: unique constraint (USER1.SYS_C006997) violated
+ORA-06512: at "USER1.TRIG_AFTER_UPDATE", line 2
+ORA-04088: error during execution of trigger 'USER1.TRIG_AFTER_UPDATE'
+
+
+SQL> create or replace trigger stmt_trig before update or delete
+  2  on Student
+  3  action varchar2(20);                          
+  4  begin
+  5  if deleting then action:='Record is deleted';
+  6  elsif updating then action:='Record is updated';
+  7  end if;
+  8  end;
+  9  /
+action varchar2(20);
+*
+ERROR at line 3:
+ORA-04079: invalid trigger specification
+
+
+SQL> create or replace trigger stmt_trg before update or delete on  Student_3113
+declare action varchar2(50); 
+begin
+if deleting then action := 'Record is deleted';
+elsif updating then action := 'Record is updated';
+end if;
+dbms_output.put_line(action);
+end;
+/  2    3    4    5    6    7    8    9  
+create or replace trigger stmt_trg before update or delete on  Student_3113
+                                                               *
+ERROR at line 1:
+ORA-00942: table or view does not exist
+
+
+SQL> /
+create or replace trigger stmt_trg before update or delete on  Student_3113
+                                                               *
+ERROR at line 1:
+ORA-00942: table or view does not exist
+
+
+SQL> create or replace trigger stmt_trg before update or delete on  Student
+declare action varchar2(50); 
+begin
+if deleting then action := 'Record is deleted';
+elsif updating then action := 'Record is updated';
+end if;
+dbms_output.put_line(action);
+end;
+/  2    3    4    5    6    7    8    9  
+
+Trigger created.
+
+SQL> delete from Student where Rollno=1;
+delete from Student where Rollno=1
+            *
+ERROR at line 1:
+ORA-00001: unique constraint (USER1.SYS_C006997) violated
+ORA-06512: at "USER1.TRIG_BEFORE_UPDATE", line 2
+ORA-04088: error during execution of trigger 'USER1.TRIG_BEFORE_UPDATE'
+
+
+SQL> 
+
